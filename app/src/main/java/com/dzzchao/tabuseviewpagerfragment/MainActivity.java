@@ -7,11 +7,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dzzchao.tabuseviewpagerfragment.fragment.Tab1Fragment;
@@ -21,7 +22,7 @@ import com.dzzchao.tabuseviewpagerfragment.fragment.Tab3Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private ViewPager mViewPager;
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTabLine() {
-        //????
         Display display = getWindow().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -76,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
         tvTab2 = (TextView) findViewById(R.id.tv_tab2);
         tvTab3 = (TextView) findViewById(R.id.tv_tab3);
 
+        RelativeLayout rlTab1 = (RelativeLayout) findViewById(R.id.rl_tab1);
+        RelativeLayout rlTab2 = (RelativeLayout) findViewById(R.id.rl_tab2);
+        RelativeLayout rlTab3 = (RelativeLayout) findViewById(R.id.rl_tab3);
+
+        rlTab1.setOnClickListener(this);
+        rlTab2.setOnClickListener(this);
+        rlTab3.setOnClickListener(this);
+
+
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -93,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d(TAG, "position = " + position + " : PositionOffset = " + positionOffset + " : positionOffsetPixels = " + positionOffsetPixels);
+                //Log.d(TAG, "position = " + position + " : PositionOffset = " + positionOffset + " : positionOffsetPixels = " + positionOffsetPixels);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) imvTabLine.getLayoutParams();
                 if (mCurrentPageIndex == 0 && position == 0) { //0-->1
                     lp.leftMargin = (int) (positionOffset * mScreen1_3 + mCurrentPageIndex * mScreen1_3);
@@ -110,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 //设置当前的tab文字为绿色
-                resetTextView();
+                tvTab1.setTextColor(Color.BLACK);
+                tvTab2.setTextColor(Color.BLACK);
+                tvTab3.setTextColor(Color.BLACK);
                 switch (position) {
                     case 0:
                         tvTab1.setTextColor(Color.parseColor("#008000"));
@@ -133,9 +144,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void resetTextView() {
-        tvTab1.setTextColor(Color.BLACK);
-        tvTab2.setTextColor(Color.BLACK);
-        tvTab3.setTextColor(Color.BLACK);
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.rl_tab1:
+                mViewPager.setCurrentItem(0, true);
+                break;
+            case R.id.rl_tab2:
+                mViewPager.setCurrentItem(1, true);
+                break;
+            case R.id.rl_tab3:
+                mViewPager.setCurrentItem(2, true);
+                break;
+        }
     }
 }
